@@ -241,8 +241,8 @@ def render_epfo_section(employee, year, month):
     with col1:
 
         st.metric(
-            "Employee EPF (12%)",
-            f"₹ {latest['employee_epf']:,.2f}",
+            "Employee EPF",
+            f"Rs. {latest['employee_epf']:,.2f}",
             border=True
         )
 
@@ -250,23 +250,23 @@ def render_epfo_section(employee, year, month):
 
         st.metric(
             "Employer EPF",
-            f"₹ {latest['employer_epf']:,.2f}",
+            f"Rs. {latest['employer_epf']:,.2f}",
             border=True
         )
 
     with col3:
 
         st.metric(
-            "Employer Pension (EPS 8.33%)",
-            f"₹ {latest['employer_eps']:,.2f}",
+            "Employer Pension (EPS)",
+            f"Rs. {latest['employer_eps']:,.2f}",
             border=True
         )
 
     with col4:
 
         st.metric(
-            "EPF balance (excludes EPS)",
-            f"₹ {latest['balance']:,.2f}",
+            "EPF Balance",
+            f"Rs. {latest['balance']:,.2f}",
             border=True
         )
 
@@ -436,7 +436,7 @@ def _render_pf(employee, year, month):
 
     st.table([
         {
-            "Contribution": "Employee EPF (12%)",
+            "Contribution": "Employee EPF",
             "Amount": latest["employee_epf"]
         },
         {
@@ -444,7 +444,7 @@ def _render_pf(employee, year, month):
             "Amount": latest["employer_epf"]
         },
         {
-            "Contribution": "Employer Pension (EPS 8.33%)",
+            "Contribution": "Employer Pension (EPS)",
             "Amount": latest["employer_eps"]
         }
     ])
