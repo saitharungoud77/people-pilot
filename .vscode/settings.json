@@ -1,0 +1,19 @@
+{
+    "// Note": "Pins VS Code / Pylance to the conda env that has Streamlit installed.",
+
+    "python.defaultInterpreterPath": "C:\\Users\\Sai Tharun\\anaconda3\\envs\\hr_poc\\python.exe",
+
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}",
+        "${workspaceFolder}/app"
+    ],
+
+    "python.analysis.autoSearchPaths": true,
+    "python.analysis.useLibraryCodeForTypes": true,
+
+    "[python]": {
+        "editor.formatOnSave": false
+    },
+    "python-envs.defaultEnvManager": "ms-python.python:conda",
+    "python-envs.defaultPackageManager": "ms-python.python:conda"
+}

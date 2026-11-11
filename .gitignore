@@ -1,0 +1,26 @@
+# Local secrets - never commit
+.streamlit/secrets.toml
+**/secrets.toml
+.env
+.env.*
+*.env
+!.env.example
+
+# Python generated files
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Database files and backups
+database/*.db
+database/*.sqlite
+database/*.sqlite3
+database/*.sqbpro
+
+# Local task logs
+logs/
+# Extra safety
+data/*.xlsx
+data/*.pdf
+logs/

@@ -1,0 +1,56 @@
+# ============================================================
+# AIT Solutions - AI HR & Payroll Portal
+# ============================================================
+# Warm neutral surfaces with an emerald accent.
+
+[theme]
+base = "light"
+
+primaryColor       = "#16856B"
+backgroundColor    = "#F7F6F2"
+secondaryBackgroundColor = "#FFFFFF"
+textColor          = "#252A2A"
+linkColor          = "#116B57"
+borderColor        = "#E1E5DF"
+linkUnderline      = false
+
+baseRadius          = "9px"
+buttonRadius        = "8px"
+showWidgetBorder    = true
+showSidebarBorder   = true
+
+font        = "Inter:https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+headingFont = "Inter:https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800&display=swap"
+codeFont    = "'JetBrains Mono':https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
+baseFontSize       = 15
+headingFontSizes   = ["2rem", "1.5rem", "1.25rem", "1.05rem", "0.95rem", "0.85rem"]
+headingFontWeights = [750, 700, 650, 600, 600, 600]
+
+dataframeBorderColor           = "#E1E5DF"
+dataframeHeaderBackgroundColor = "#E8F2ED"
+dataframeHeaderTextColor       = "#252A2A"
+
+redColor    = "#F87171"
+orangeColor = "#FB923C"
+yellowColor = "#FBBF24"
+greenColor  = "#16856B"
+blueColor   = "#4F86C6"
+violetColor = "#76528B"
+grayColor   = "#68716F"
+
+chartCategoricalColors = ["#16856B","#4F86C6","#76528B","#E0A14B","#C66A4A","#68716F","#4E9A83"]
+chartSequentialColors  = ["#E8F2ED","#D2E7DC","#B8D9CA","#91C5B0","#68AD94","#428F78","#2A7863","#116B57"]
+
+
+# Warm charcoal navigation sidebar
+[theme.sidebar]
+backgroundColor          = "#252B29"
+secondaryBackgroundColor = "#303835"
+textColor                = "#F4F4EF"
+borderColor              = "#414A46"
+primaryColor             = "#69B69D"
+
+
+[client]
+toolbarMode           = "minimal"
+showSidebarNavigation = false

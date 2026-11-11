@@ -1,0 +1,24 @@
+# AIT Solutions - AI HR & Payroll Portal
+# Python dependencies.
+# Install everything with:  pip install -r requirements
+#
+# (sqlite3, datetime, calendar, json, os, re, time, hashlib, hmac,
+#  secrets, pathlib and sys are all built into Python - no install.)
+
+# Web app / user interface
+streamlit==1.65.0
+
+# Tables in the database viewer
+pandas==3.0.6
+
+# PDF generation - payslips and settlement statements
+fpdf2==2.8.9
+
+# Reading text from uploaded offer-letter PDFs
+PyMuPDF==1.28.2
+
+# Profile-photo editing (resize, EXIF flip, JPEG compression)
+Pillow==12.3.0
+
+# AI offer-letter field extraction (OpenAI)
+openai==3.31.0
