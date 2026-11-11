@@ -28,9 +28,11 @@ from database.connection import (
 # Streamlit's native OIDC login (`st.login`) with a real identity
 # provider instead.
 
-DEFAULT_HR_USERNAME = "hr"
-DEFAULT_HR_PASSWORD = "hr@123"
-DEFAULT_EMPLOYEE_PASSWORD = "employee123"
+import os
+
+DEFAULT_HR_USERNAME = os.getenv("DEFAULT_HR_USERNAME", "hr")
+DEFAULT_HR_PASSWORD = os.getenv("DEFAULT_HR_PASSWORD", "change-me-on-first-login")
+DEFAULT_EMPLOYEE_PASSWORD = os.getenv("DEFAULT_EMPLOYEE_PASSWORD", "change-me-on-first-login")
 
 _PBKDF2_ITERATIONS = 200_000
 
