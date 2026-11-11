@@ -1911,6 +1911,47 @@ def inject_user_theme(preferences):
         background: linear-gradient(180deg, var(--ait-accent), var(--ait-accent-strong)) !important;
     }}
 
+    /* Ensure metric card titles and rupee figures never clip with '...' */
+    [data-testid="stMetric"] [data-testid="stMetricLabel"],
+    [data-testid="stMetric"] [data-testid="stMetricDelta"] {{
+        color: var(--ait-surface-muted) !important;
+        -webkit-text-fill-color: var(--ait-surface-muted) !important;
+    }}
+
+    [data-testid="stMetric"] [data-testid="stMetricLabel"] *,
+    [data-testid="stMetric"] [data-testid="stMetricDelta"] * {{
+        color: var(--ait-surface-muted) !important;
+        -webkit-text-fill-color: var(--ait-surface-muted) !important;
+    }}
+
+    [data-testid="stMetric"] [data-testid="stMetricLabel"],
+    [data-testid="stMetric"] [data-testid="stMetricLabel"] * {{
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        overflow-wrap: break-word !important;
+        word-break: normal !important;
+        height: auto !important;
+        max-height: none !important;
+        max-width: 100% !important;
+        line-height: 1.3 !important;
+        letter-spacing: .02em !important;
+        font-size: .74rem !important;
+    }}
+
+    [data-testid="stMetric"] [data-testid="stMetricValue"],
+    [data-testid="stMetric"] [data-testid="stMetricValue"] * {{
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        overflow-wrap: anywhere !important;
+        height: auto !important;
+        max-height: none !important;
+        font-size: clamp(1.15rem, 1.55vw, 1.65rem) !important;
+        line-height: 1.25 !important;
+        font-weight: 750 !important;
+    }}
+
     [data-testid="stBaseButton-primary"],
     [data-testid="stBaseButton-primaryFormSubmit"] {{
         background: var(--ait-accent) !important;

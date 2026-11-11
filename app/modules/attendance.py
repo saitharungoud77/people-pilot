@@ -123,6 +123,10 @@ def _clock(value):
 def _as_date(value):
     """A date from a date or ISO string, else None."""
 
+    if isinstance(value, datetime.datetime):
+
+        return value.date()
+
     if isinstance(value, datetime.date):
 
         return value
@@ -170,9 +174,18 @@ DEFAULT_SHIFT = {
 }
 
 
+def _shift_int(shift, key, default):
+    """Read an integer setting from a shift dict without losing explicit 0."""
+
+    if not shift:
+        return int(default)
+    val = shift.get(key)
+    return int(default if val is None else val)
+
+
 def _shift_row(row):
 
-    if not row:
+    if not row or row[0] is None:
 
         return dict(DEFAULT_SHIFT)
 
@@ -190,8 +203,20 @@ def _shift_row(row):
 
     shift = dict(zip(keys, row))
 
+    shift["shift_name"] = shift["shift_name"] or DEFAULT_SHIFT["shift_name"]
+    shift["client_project"] = (
+        shift["client_project"] or DEFAULT_SHIFT["client_project"]
+    )
     shift["start_time"] = _clock(shift["start_time"]) or SHIFT_START
     shift["end_time"] = _clock(shift["end_time"]) or SHIFT_END
+    if shift["grace_minutes"] is None:
+        shift["grace_minutes"] = GRACE_MINUTES
+    if shift["break_minutes"] is None:
+        shift["break_minutes"] = BREAK_MINUTES
+    if shift["min_hours_full_day"] is None:
+        shift["min_hours_full_day"] = MIN_HOURS_FULL_DAY
+    if shift["min_hours_half_day"] is None:
+        shift["min_hours_half_day"] = MIN_HOURS_HALF_DAY
 
     return shift
 
@@ -529,11 +554,12 @@ def hours_worked(in_time, out_time, shift=None):
         # A shift that runs past midnight.
         span += 24 * 60
 
-    if int((shift.get("break_minutes") or BREAK_MINUTES)) and (
+    break_mins = _shift_int(shift, "break_minutes", BREAK_MINUTES)
+    if break_mins and (
         span > BREAK_THRESHOLD_HOURS * 60
     ):
 
-        span -= int((shift.get("break_minutes") or BREAK_MINUTES))
+        span -= break_mins
 
     return round(max(span, 0) / 60.0, 2)
 
@@ -550,8 +576,8 @@ def late_by(in_time, shift=None):
         return 0
 
     allowed = (
-        _minutes(shift.get("start_time", SHIFT_START))
-        + int(shift.get("grace_minutes", GRACE_MINUTES))
+        _minutes(shift.get("start_time") or SHIFT_START)
+        + _shift_int(shift, "grace_minutes", GRACE_MINUTES)
     )
 
     return max(start - allowed, 0)
@@ -608,7 +634,8 @@ def derive_status(hours, shift=None):
 
         return "Present"
 
-    if hours < float(shift.get("min_hours_half_day", MIN_HOURS_HALF_DAY)):
+    half_hours = shift.get("min_hours_half_day")
+    if hours < float(MIN_HOURS_HALF_DAY if half_hours is None else half_hours):
 
         return "Half Day"
 
@@ -1216,8 +1243,8 @@ def attendance_insights(year, month):
         if scheduled_minutes < 0:
             scheduled_minutes += 24 * 60
         if scheduled_minutes > BREAK_THRESHOLD_HOURS * 60:
-            scheduled_minutes -= int(
-                (shift.get("break_minutes") or BREAK_MINUTES)
+            scheduled_minutes -= _shift_int(
+                shift, "break_minutes", BREAK_MINUTES
             )
         scheduled_hours = max(scheduled_minutes, 0) / 60
 
@@ -1321,9 +1348,9 @@ def _shift_caption(shift=None):
     return (
         f"**{label}** shift "
         f"**{shift['start_time']} – {shift['end_time']}** "
-        f"({float(shift.get('min_hours_full_day') or MIN_HOURS_FULL_DAY):.0f} "
-        f"hours, {int(shift.get('break_minutes', BREAK_MINUTES))} min break). "
-        f"More than {int((shift.get('grace_minutes') or GRACE_MINUTES))} min "
+        f"({float(MIN_HOURS_FULL_DAY if shift.get('min_hours_full_day') is None else shift.get('min_hours_full_day')):.0f} "
+        f"hours, {_shift_int(shift, 'break_minutes', BREAK_MINUTES)} min break). "
+        f"More than {_shift_int(shift, 'grace_minutes', GRACE_MINUTES)} min "
         f"late counts as late."
     )
 
@@ -1390,7 +1417,7 @@ def _punch_metrics(record, shift=None):
             icon=":material/alarm:",
             border=True,
             help=f"On time means before {shift['start_time']}, "
-                 f"plus a {int((shift.get('grace_minutes') or GRACE_MINUTES))} "
+                 f"plus a {_shift_int(shift, 'grace_minutes', GRACE_MINUTES)} "
                  f"minute grace."
         )
 
@@ -1478,6 +1505,19 @@ def show_attendance_page(go_home=None):
                 "so there is no attendance to record."
             )
 
+        # Anyone on approved leave is on the sheet even without an
+        # attendance row, so HR is never left guessing — merge before counting.
+        for person in register:
+
+            if (
+                not person["marked"]
+                and person["employee_id"] in on_leave
+            ):
+
+                person["status"] = "Leave"
+
+                person["marked"] = True
+
         counts = register_summary(register, att_date)
 
         metrics = st.columns(6)
@@ -1523,19 +1563,6 @@ def show_attendance_page(go_home=None):
                         if label == "On leave" else None
                     )
                 )
-
-        # Anyone on approved leave is on the sheet even without an
-        # attendance row, so HR is never left guessing.
-        for person in register:
-
-            if (
-                not person["marked"]
-                and person["employee_id"] in on_leave
-            ):
-
-                person["status"] = "Leave"
-
-                person["marked"] = True
 
         rows = []
 
@@ -1612,17 +1639,23 @@ def show_attendance_page(go_home=None):
 
                     with status_col:
 
-                        value = current.get("status", "Present")
+                        status_choices = ["Not marked"] + ATTENDANCE_STATUSES
+
+                        default_status = (
+                            current.get("status")
+                            if current.get("status") in ATTENDANCE_STATUSES
+                            else ("Leave" if employee_id in on_leave else "Not marked")
+                        )
 
                         index = (
-                            ATTENDANCE_STATUSES.index(value)
-                            if value in ATTENDANCE_STATUSES
+                            status_choices.index(default_status)
+                            if default_status in status_choices
                             else 0
                         )
 
                         statuses[employee_id] = st.selectbox(
                             "Status",
-                            ATTENDANCE_STATUSES,
+                            status_choices,
                             index=index,
                             key=f"att_status_{employee_id}_{att_date}",
                             label_visibility="collapsed"
@@ -1668,13 +1701,25 @@ def show_attendance_page(go_home=None):
 
                 for employee_id in statuses:
 
+                    chosen_status = statuses[employee_id]
+                    if chosen_status == "Not marked":
+                        continue
+
+                    # Absent and Leave days should never retain work punch times.
+                    if chosen_status in ("Absent", "Leave"):
+                        in_val = ""
+                        out_val = ""
+                    else:
+                        in_val = ins[employee_id]
+                        out_val = outs[employee_id]
+
                     mark_attendance(
                         employee_id,
                         att_date,
-                        statuses[employee_id],
+                        chosen_status,
                         notes[employee_id],
-                        in_time=ins[employee_id],
-                        out_time=outs[employee_id]
+                        in_time=in_val,
+                        out_time=out_val
                     )
 
                 st.session_state["att_flash"] = (
@@ -1906,7 +1951,7 @@ def show_my_attendance():
                 "schedule"
             ),
             (
-                f"{int((my_shift.get('grace_minutes') or GRACE_MINUTES))} min grace",
+                f"{_shift_int(my_shift, 'grace_minutes', GRACE_MINUTES)} min grace",
                 "alarm"
             ),
             ("Hours tracked", "timer")
@@ -1977,7 +2022,7 @@ def show_my_attendance():
                 type="primary",
                 width="stretch",
                 disabled=bool(record and record["in_time"]),
-                help=f"Records that you started at {SHIFT_START}."
+                help="Records your clock-in time for today."
             ):
 
                 ok, message = clock_in(
@@ -2123,7 +2168,7 @@ def show_my_attendance():
             border=True,
             help=f"Days you clocked in after "
                  f"{my_shift['start_time']} plus "
-                 f"{int(my_(shift.get('grace_minutes') or GRACE_MINUTES))} min."
+                 f"{_shift_int(my_shift, 'grace_minutes', GRACE_MINUTES)} min."
         )
 
     with metrics[3]:

@@ -379,45 +379,57 @@ def _render_pf(employee, year, month):
 
     st.subheader("Summary", icon=":material/savings:")
 
-    col1, col2, col3, col4, col5 = st.columns(5)
+    col1, col2, col3 = st.columns(3)
 
     with col1:
 
         st.metric(
-            f"Employee contribution ({scope})",
+            "Employee contribution",
             f"₹ {employee_total:,.2f}",
+            delta=scope,
+            delta_color="off",
             border=True
         )
 
     with col2:
 
         st.metric(
-            f"Employer EPF ({scope})",
+            "Employer EPF",
             f"₹ {employer_total:,.2f}",
+            delta=scope,
+            delta_color="off",
             border=True
         )
 
     with col3:
 
         st.metric(
-            f"Employer pension / EPS ({scope})",
+            "Employer pension / EPS",
             f"₹ {pension_total:,.2f}",
+            delta=scope,
+            delta_color="off",
             border=True
         )
+
+    col4, col5 = st.columns(2)
 
     with col4:
 
         st.metric(
-            f"EPF balance (as of {latest['period']})",
+            "EPF balance",
             f"₹ {total_balance:,.2f}",
+            delta=f"as of {latest['period']}",
+            delta_color="off",
             border=True
         )
 
     with col5:
 
         st.metric(
-            f"Total contributions incl. EPS ({scope})",
+            "Total contributions incl. EPS",
             f"₹ {employee_total + employer_total + pension_total:,.2f}",
+            delta=scope,
+            delta_color="off",
             border=True
         )
 

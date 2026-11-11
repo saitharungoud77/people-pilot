@@ -1,6 +1,6 @@
 # AI HR & Payroll Portal - Detailed Documentation
 
-**Generated on:** 11 November 2026, 12:49 PM
+**Generated on:** 11 November 2026, 10:06 PM
 **Company:** AIT Solutions | **Location:** Hi-Tech City, Hyderabad
 **Type:** AI-first HR & Payroll Portal (HR + Employees)
 
@@ -13,12 +13,12 @@
 | Item | Value | Notes |
 | --- | --- | --- |
 | Modules in app/modules/ | 46 | One file per feature
-| Total lines | 36,964 | Auto-counted
-| Total functions | 587 | Auto-counted
+| Total lines | 37,048 | Auto-counted
+| Total functions | 588 | Auto-counted
 | HR routes | 27 | From app/main.py
 | Employee routes | 18 | From app/main.py
 | DB tables | 24 | From database/connection.py
-| pip packages | 6 | From requirements
+| pip packages | 0 | From requirements
 | AI modules | 8 | OpenAI based
 
 ---
@@ -73,12 +73,6 @@
 
 | Package | Version | Free/Paid | What it does here |
 | --- | --- | --- | --- |
-| streamlit | 1.65.0 | FREE | The whole user interface and app runtime. |
-| pandas | 3.0.6 | FREE | Powers the sortable tables (database viewer and interview scorecard). |
-| fpdf2 | 2.8.9 | FREE | Builds payslip, settlement and letter PDFs. |
-| PyMuPDF | 1.28.2 | FREE | Extracts text from uploaded offer letters, resumes and text-based bills. |
-| Pillow | 12.3.0 | FREE | Profile photo editing and shrinking bill photos before AI reading. |
-| openai | 3.31.0 | FREE | Client for all AI calls: offer letter, resume, assistant, Form 16 matching, bill reader, audit brief, letters and hiring pack. |
 
 ### 3.3 Built-in (FREE)
 sqlite3, datetime, calendar, json, os, re, csv, io, base64, math, hashlib, hmac, secrets, pathlib, sys, ast, tempfile, shutil, subprocess
@@ -156,8 +150,8 @@ sqlite3, datetime, calendar, json, os, re, csv, io, base64, math, hashlib, hmac,
 | 4 | approvals.py | 327 | 4 | NO | approvals.py | - | - | FREE |
 | 5 | assets.py | 1,168 | 31 | NO | Company assets | Both roles | Assets issued to employees (laptop, phone, access card) with issue and return dates. HR manages the register; employees see what is issued to them. | FREE |
 | 6 | assistant.py | 2,539 | 40 | YES | AIT Assist popup | Both roles | The floating assistant: a robot-head launcher, a small chat panel, policy answers and fourteen database tools that can actually perform actions. | PAID (OpenAI) |
-| 7 | attendance.py | 2,182 | 40 | NO | Attendance | Both roles | Clock in and out with Office or Work From Home, late mark, half-day and full-day rules, break deduction, a daily HR register, and past days locked to employees. Clock-in is refused on weekends, holidays and approved leave. | FREE |
-| 8 | auth.py | 1,186 | 15 | NO | Sign-in, sign-out and passwords | Public + both roles | The single sign-in gate. One form checks the identifier (employee id or username) and sends HR and employees to their own home. Also handles sign-out, password change and the full-screen split sign-in page with the story panel. | FREE |
+| 7 | attendance.py | 2,214 | 41 | NO | Attendance | Both roles | Clock in and out with Office or Work From Home, late mark, half-day and full-day rules, break deduction, a daily HR register, and past days locked to employees. Clock-in is refused on weekends, holidays and approved leave. | FREE |
+| 8 | auth.py | 1,188 | 15 | NO | Sign-in, sign-out and passwords | Public + both roles | The single sign-in gate. One form checks the identifier (employee id or username) and sends HR and employees to their own home. Also handles sign-out, password change and the full-screen split sign-in page with the story panel. | FREE |
 | 9 | avatar.py | 367 | 11 | NO | Avatar | Both roles | Renders a circular avatar from the stored photo, with initials as a fallback when there is no photo. | FREE |
 | 10 | bill_reader.py | 403 | 7 | YES | AI bill reader | Employee (inside reimbursements) | Reads a bill photo or text-based PDF with OpenAI vision and returns vendor, bill number, date, total, GST, category and a short description for the claim form. | PAID (OpenAI) |
 | 11 | config.py | 87 | 4 | NO | Secret lookup | Internal | Finds OPENAI_API_KEY in the project .streamlit/secrets.toml, then the home .streamlit/secrets.toml, then the environment. Keeps keys out of source files. | FREE |
@@ -166,12 +160,12 @@ sqlite3, datetime, calendar, json, os, re, csv, io, base64, math, hashlib, hmac,
 | 14 | employee.py | 1,292 | 6 | NO | Employee records | HR | Directory and full employee records: create and edit people, personal details, documents, project assignments and exit details. | FREE |
 | 15 | employee_documents.py | 525 | 12 | NO | employee_documents.py | - | - | FREE |
 | 16 | employee_services.py | 733 | 17 | NO | employee_services.py | - | - | FREE |
-| 17 | epfo.py | 564 | 9 | NO | Provident fund | Both roles | PF/EPFO statement reads employee and employer contributions from saved, released payslips only. The balance is a running total of contributions, with no interest added; unreleased months are omitted and the statement is capped at the latest due period and the employee's exit or final-settlement month. | FREE |
+| 17 | epfo.py | 576 | 9 | NO | Provident fund | Both roles | PF/EPFO statement reads employee and employer contributions from saved, released payslips only. The balance is a running total of contributions, with no interest added; unreleased months are omitted and the statement is capped at the latest due period and the employee's exit or final-settlement month. | FREE |
 | 18 | hiring_pack.py | 778 | 11 | YES | AI hiring pack | HR | Generates a job description, skills and screening questions, sends the skills to the resume analyzer, and builds an interview kit for a screened candidate. | PAID (OpenAI) |
 | 19 | holidays.py | 881 | 22 | NO | Holiday calendar | Both roles | The current year's upcoming holiday list. Fixed national holidays plus the curated 2026 festival dates are seeded once per year; HR can add, edit or remove entries, and employees see a read-only calendar. Past holidays and future years are not shown. | FREE |
 | 20 | home.py | 89 | 2 | NO | Landing splash | Public | Branded splash screen shown before sign-in, with the product name and a way into the login. | FREE |
 | 21 | leave.py | 2,559 | 39 | NO | Leave desk | Both roles | The corporate leave desk: leave types, yearly entitlements, balances, working-day counting, half-days, overlap and policy checks, approval with notes, cancellation, history and team coverage on the approval card. | FREE |
-| 22 | letter_generator.py | 1,124 | 20 | YES | AI letter generator | HR | Drafts experience, relieving, salary, employment verification and warning letters from database facts, with optional AI polish and a number guard, then exports a PDF. | PAID (OpenAI) |
+| 22 | letter_generator.py | 1,125 | 20 | YES | AI letter generator | HR | Drafts experience, relieving, salary, employment verification and warning letters from database facts, with optional AI polish and a number guard, then exports a PDF. | PAID (OpenAI) |
 | 23 | my_overview.py | 518 | 8 | NO | Employee home | Employee | The employee home: welcome header, latest payslip, leave balance, attendance snapshot and quick links to their own pages. | FREE |
 | 24 | nav.py | 288 | 1 | NO | Sidebar navigation | Both roles | Role-aware sidebar with collapsible blocks. AI features live together in the AIT Assist block. Also shows the avatar, sign out and change password. | FREE |
 | 25 | notifications.py | 382 | 12 | NO | Notification bell | Both roles | In-app notifications at the top right. One row per message, addressed either to HR or to one employee id. Emits messages when leave, bills, assets and approvals change. | FREE |
@@ -194,7 +188,7 @@ sqlite3, datetime, calendar, json, os, re, csv, io, base64, math, hashlib, hmac,
 | 42 | settlement.py | 1,015 | 15 | NO | Full and final settlement | HR | Calculates what a leaver is owed: pending salary, leave encashment, notice recovery and other dues, with a PDF statement. | FREE |
 | 43 | shifts.py | 603 | 6 | NO | Shift timings | HR | Create shifts per client or project, assign employees and notify them when moved. Attendance uses each person's own shift for late marks, half-days, the break deduction and the shift caption. | FREE |
 | 44 | tax.py | 1,974 | 43 | YES | Income tax and Form 16 | HR writes, employee reads own | Form 16 and monthly TDS workspace, old vs new regime comparison, and bulk Form 16 upload with AI name matching so each PDF is issued to the right employee. | PAID (OpenAI) |
-| 45 | theme.py | 2,162 | 10 | NO | Design system | Both roles | One global stylesheet: accent colour, cards, gradient hero, subtle motion, avatar and assistant styles. Colours and fonts themselves live in .streamlit/config.toml. | FREE |
+| 45 | theme.py | 2,199 | 10 | NO | Design system | Both roles | One global stylesheet: accent colour, cards, gradient hero, subtle motion, avatar and assistant styles. Colours and fonts themselves live in .streamlit/config.toml. | FREE |
 | 46 | workdays.py | 241 | 5 | NO | Working-day math | Internal | One neutral module for questions like how many working days is this range. Counts Monday to Friday and skips public holidays, so leave, payslip LOP and the audit all agree. | FREE |
 
 ---
