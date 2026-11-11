@@ -529,11 +529,11 @@ def hours_worked(in_time, out_time, shift=None):
         # A shift that runs past midnight.
         span += 24 * 60
 
-    if int(shift.get("break_minutes", BREAK_MINUTES)) and (
+    if int((shift.get("break_minutes") or BREAK_MINUTES)) and (
         span > BREAK_THRESHOLD_HOURS * 60
     ):
 
-        span -= int(shift.get("break_minutes", BREAK_MINUTES))
+        span -= int((shift.get("break_minutes") or BREAK_MINUTES))
 
     return round(max(span, 0) / 60.0, 2)
 
@@ -1217,7 +1217,7 @@ def attendance_insights(year, month):
             scheduled_minutes += 24 * 60
         if scheduled_minutes > BREAK_THRESHOLD_HOURS * 60:
             scheduled_minutes -= int(
-                shift.get("break_minutes", BREAK_MINUTES)
+                (shift.get("break_minutes") or BREAK_MINUTES)
             )
         scheduled_hours = max(scheduled_minutes, 0) / 60
 
@@ -1323,7 +1323,7 @@ def _shift_caption(shift=None):
         f"**{shift['start_time']} – {shift['end_time']}** "
         f"({float(shift.get('min_hours_full_day', MIN_HOURS_FULL_DAY)):.0f} "
         f"hours, {int(shift.get('break_minutes', BREAK_MINUTES))} min break). "
-        f"More than {int(shift.get('grace_minutes', GRACE_MINUTES))} min "
+        f"More than {int((shift.get('grace_minutes') or GRACE_MINUTES))} min "
         f"late counts as late."
     )
 
@@ -1390,7 +1390,7 @@ def _punch_metrics(record, shift=None):
             icon=":material/alarm:",
             border=True,
             help=f"On time means before {shift['start_time']}, "
-                 f"plus a {int(shift.get('grace_minutes', GRACE_MINUTES))} "
+                 f"plus a {int((shift.get('grace_minutes') or GRACE_MINUTES))} "
                  f"minute grace."
         )
 
@@ -1906,7 +1906,7 @@ def show_my_attendance():
                 "schedule"
             ),
             (
-                f"{int(my_shift.get('grace_minutes', GRACE_MINUTES))} min grace",
+                f"{int(my_(shift.get('grace_minutes') or GRACE_MINUTES))} min grace",
                 "alarm"
             ),
             ("Hours tracked", "timer")
@@ -2123,7 +2123,7 @@ def show_my_attendance():
             border=True,
             help=f"Days you clocked in after "
                  f"{my_shift['start_time']} plus "
-                 f"{int(my_shift.get('grace_minutes', GRACE_MINUTES))} min."
+                 f"{int(my_(shift.get('grace_minutes') or GRACE_MINUTES))} min."
         )
 
     with metrics[3]:
