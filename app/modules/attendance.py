@@ -1321,7 +1321,7 @@ def _shift_caption(shift=None):
     return (
         f"**{label}** shift "
         f"**{shift['start_time']} – {shift['end_time']}** "
-        f"({float(shift.get('min_hours_full_day', MIN_HOURS_FULL_DAY)):.0f} "
+        f"({float(shift.get('min_hours_full_day') or MIN_HOURS_FULL_DAY):.0f} "
         f"hours, {int(shift.get('break_minutes', BREAK_MINUTES))} min break). "
         f"More than {int((shift.get('grace_minutes') or GRACE_MINUTES))} min "
         f"late counts as late."
