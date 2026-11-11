@@ -735,6 +735,7 @@ def build_letter_pdf(letter, employee, options):
 
     def write(text, size=10.5, style="", color=DARK, align="L", h=6.4, gap=3.6):
 
+        text = str(text).encode("latin-1", "replace").decode("latin-1")
         pdf.set_font(font, style, size)
         pdf.set_text_color(*color)
         pdf.multi_cell(0, h, text, align=align)
