@@ -327,10 +327,10 @@ def show_application():
 
         st.metric(
             "Annual Payroll Run",
-            f"₹ {total_ctc / 100000:,.2f} L",
+            f"Rs. {total_ctc / 100000:,.2f} L",
             icon=":material/payments:",
             border=True,
-            help=f"Combined annual CTC (Avg: ₹ {average_ctc / 100000:,.2f} L / yr)."
+            help=f"Combined annual CTC (Avg: Rs. {average_ctc / 100000:,.2f} L / yr)."
         )
 
     with col3:
