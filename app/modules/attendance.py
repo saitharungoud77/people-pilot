@@ -1906,7 +1906,7 @@ def show_my_attendance():
                 "schedule"
             ),
             (
-                f"{int(my_(shift.get('grace_minutes') or GRACE_MINUTES))} min grace",
+                f"{int((my_shift.get('grace_minutes') or GRACE_MINUTES))} min grace",
                 "alarm"
             ),
             ("Hours tracked", "timer")
