@@ -92,6 +92,15 @@ EMPLOYEE_NAV = [
 def render_sidebar(user):
     """Render the sidebar for the signed-in user."""
 
+    st.markdown(
+        """
+        <style>
+        [data-testid="stSidebar"] label { color: #FFFFFF !important; }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
     current = st.session_state.get("current_page", "application")
 
     items = HR_NAV if user["role"] == "hr" else EMPLOYEE_NAV
