@@ -258,6 +258,8 @@ def render_sidebar(user):
                     width="stretch",
                     type="secondary",
                 ):
+                    st.markdown("#### Change Password")
+                    st.caption("Update your portal account password.")
                     with st.form("sidebar_change_password"):
                         current = st.text_input(
                             "Current Password",
@@ -273,7 +275,8 @@ def render_sidebar(user):
                         )
                         saved = st.form_submit_button(
                             "Update Password",
-                            width="stretch"
+                            width="stretch",
+                            type="primary"
                         )
 
                     if saved:

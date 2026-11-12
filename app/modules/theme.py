@@ -1311,6 +1311,92 @@ STYLESHEET = """
     outline-offset: 2px;
 }
 
+/* Popover floating containers (Password popup, Notifications, Leave History) */
+[data-testid="stPopoverBody"],
+[data-baseweb="popover"],
+[data-baseweb="popover"] > div,
+[data-testid="stSidebar"] [data-testid="stPopoverBody"] {
+    background: #FFFFFF !important;
+    background-color: #FFFFFF !important;
+    border: 1px solid #D7DDD6 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18) !important;
+}
+
+[data-testid="stPopoverBody"] form,
+[data-testid="stPopoverBody"] [data-testid="stForm"] {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+[data-testid="stPopoverBody"] *,
+[data-baseweb="popover"] * {
+    color: #252A2A !important;
+    -webkit-text-fill-color: #252A2A !important;
+}
+
+[data-testid="stPopoverBody"] [data-testid="stWidgetLabel"] *,
+[data-testid="stPopoverBody"] [data-testid="stWidgetLabel"] p,
+[data-testid="stPopoverBody"] label,
+[data-testid="stPopoverBody"] p,
+[data-testid="stPopoverBody"] span,
+[data-testid="stPopoverBody"] h1,
+[data-testid="stPopoverBody"] h2,
+[data-testid="stPopoverBody"] h3,
+[data-testid="stPopoverBody"] h4,
+[data-testid="stPopoverBody"] h5,
+[data-baseweb="popover"] [data-testid="stWidgetLabel"] *,
+[data-baseweb="popover"] [data-testid="stWidgetLabel"] p,
+[data-baseweb="popover"] label,
+[data-baseweb="popover"] p {
+    color: #252A2A !important;
+    -webkit-text-fill-color: #252A2A !important;
+    font-weight: 600 !important;
+    font-size: .85rem !important;
+}
+
+[data-testid="stPopoverBody"] [data-testid="stCaptionContainer"] *,
+[data-baseweb="popover"] [data-testid="stCaptionContainer"] * {
+    color: #68716F !important;
+    -webkit-text-fill-color: #68716F !important;
+}
+
+[data-testid="stPopoverBody"] [data-testid="stTextInput"] input,
+[data-baseweb="popover"] [data-testid="stTextInput"] input {
+    background: #FFFFFF !important;
+    background-color: #FFFFFF !important;
+    color: #252A2A !important;
+    -webkit-text-fill-color: #252A2A !important;
+    border: 1px solid #D7DDD6 !important;
+    border-radius: 6px !important;
+}
+
+[data-testid="stPopoverBody"] [data-testid="stTextInput"] input:focus,
+[data-baseweb="popover"] [data-testid="stTextInput"] input:focus {
+    border-color: #16856B !important;
+    box-shadow: 0 0 0 3px rgba(22, 133, 107, .14) !important;
+}
+
+[data-testid="stPopoverBody"] [data-testid="stBaseButton-secondaryFormSubmit"],
+[data-testid="stPopoverBody"] [data-testid="stBaseButton-primaryFormSubmit"],
+[data-baseweb="popover"] [data-testid="stBaseButton-secondaryFormSubmit"],
+[data-baseweb="popover"] [data-testid="stBaseButton-primaryFormSubmit"] {
+    background: #16856B !important;
+    border-color: #116B57 !important;
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    font-weight: 600 !important;
+    border-radius: 6px !important;
+}
+
+[data-testid="stPopoverBody"] [data-testid="stBaseButton-secondaryFormSubmit"] *,
+[data-testid="stPopoverBody"] [data-testid="stBaseButton-primaryFormSubmit"] *,
+[data-baseweb="popover"] [data-testid="stBaseButton-secondaryFormSubmit"] *,
+[data-baseweb="popover"] [data-testid="stBaseButton-primaryFormSubmit"] * {
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+}
+
 hr,
 [data-testid="stDivider"] {
     border-color: #D7DDD6 !important;
@@ -1870,12 +1956,37 @@ def inject_user_theme(preferences):
     }}
 
     [data-testid="stPopover"] *,
+    [data-testid="stPopoverBody"] *,
+    [data-baseweb="popover"] *,
+    [data-baseweb="popover"] > div *,
     [data-testid="stDialog"] > div * {{
         color: var(--ait-surface-text) !important;
         -webkit-text-fill-color: var(--ait-surface-text) !important;
     }}
 
+    [data-testid="stPopoverBody"] [data-testid="stWidgetLabel"] *,
+    [data-testid="stPopoverBody"] [data-testid="stWidgetLabel"] p,
+    [data-testid="stPopoverBody"] label,
+    [data-testid="stPopoverBody"] p,
+    [data-testid="stPopoverBody"] span,
+    [data-testid="stPopoverBody"] h1,
+    [data-testid="stPopoverBody"] h2,
+    [data-testid="stPopoverBody"] h3,
+    [data-testid="stPopoverBody"] h4,
+    [data-testid="stPopoverBody"] h5,
+    [data-baseweb="popover"] [data-testid="stWidgetLabel"] *,
+    [data-baseweb="popover"] [data-testid="stWidgetLabel"] p,
+    [data-baseweb="popover"] label,
+    [data-baseweb="popover"] p {{
+        color: var(--ait-surface-text) !important;
+        -webkit-text-fill-color: var(--ait-surface-text) !important;
+        font-weight: 600 !important;
+        font-size: .85rem !important;
+    }}
+
     [data-testid="stPopover"] [data-testid="stCaptionContainer"] *,
+    [data-testid="stPopoverBody"] [data-testid="stCaptionContainer"] *,
+    [data-baseweb="popover"] [data-testid="stCaptionContainer"] *,
     [data-testid="stDialog"] > div [data-testid="stCaptionContainer"] * {{
         color: var(--ait-surface-muted) !important;
         -webkit-text-fill-color: var(--ait-surface-muted) !important;
@@ -1886,10 +1997,65 @@ def inject_user_theme(preferences):
     [data-testid="stVerticalBlockBorderWrapper"],
     [data-testid="stExpander"],
     [data-testid="stPopover"],
+    [data-testid="stPopoverBody"],
+    [data-baseweb="popover"],
+    [data-baseweb="popover"] > div,
+    [data-testid="stSidebar"] [data-testid="stPopoverBody"],
     [data-testid="stDialog"] > div {{
         background: var(--ait-surface) !important;
+        background-color: var(--ait-surface) !important;
         border-color: var(--ait-border) !important;
         color: var(--ait-text) !important;
+    }}
+
+    [data-testid="stPopoverBody"],
+    [data-baseweb="popover"] > div,
+    [data-testid="stSidebar"] [data-testid="stPopoverBody"] {{
+        border: 1px solid var(--ait-border) !important;
+        border-radius: 12px !important;
+        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22) !important;
+    }}
+
+    [data-testid="stPopoverBody"] form,
+    [data-testid="stPopoverBody"] [data-testid="stForm"] {{
+        background: transparent !important;
+        background-color: transparent !important;
+    }}
+
+    [data-testid="stPopoverBody"] [data-testid="stTextInput"] input,
+    [data-baseweb="popover"] [data-testid="stTextInput"] input {{
+        background: var(--ait-surface) !important;
+        background-color: var(--ait-surface) !important;
+        color: var(--ait-surface-text) !important;
+        -webkit-text-fill-color: var(--ait-surface-text) !important;
+        border: 1px solid var(--ait-border) !important;
+        border-radius: 6px !important;
+    }}
+
+    [data-testid="stPopoverBody"] [data-testid="stTextInput"] input:focus,
+    [data-baseweb="popover"] [data-testid="stTextInput"] input:focus {{
+        border-color: var(--ait-accent) !important;
+        box-shadow: 0 0 0 3px var(--ait-accent-soft) !important;
+    }}
+
+    [data-testid="stPopoverBody"] [data-testid="stBaseButton-secondaryFormSubmit"],
+    [data-testid="stPopoverBody"] [data-testid="stBaseButton-primaryFormSubmit"],
+    [data-baseweb="popover"] [data-testid="stBaseButton-secondaryFormSubmit"],
+    [data-baseweb="popover"] [data-testid="stBaseButton-primaryFormSubmit"] {{
+        background: var(--ait-accent) !important;
+        border-color: var(--ait-accent-readable) !important;
+        color: var(--ait-accent-text) !important;
+        -webkit-text-fill-color: var(--ait-accent-text) !important;
+        font-weight: 600 !important;
+        border-radius: 6px !important;
+    }}
+
+    [data-testid="stPopoverBody"] [data-testid="stBaseButton-secondaryFormSubmit"] *,
+    [data-testid="stPopoverBody"] [data-testid="stBaseButton-primaryFormSubmit"] *,
+    [data-baseweb="popover"] [data-testid="stBaseButton-secondaryFormSubmit"] *,
+    [data-baseweb="popover"] [data-testid="stBaseButton-primaryFormSubmit"] * {{
+        color: var(--ait-accent-text) !important;
+        -webkit-text-fill-color: var(--ait-accent-text) !important;
     }}
 
     [data-testid="stMetric"] *,
