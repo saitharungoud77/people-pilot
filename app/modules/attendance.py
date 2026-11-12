@@ -856,8 +856,11 @@ def clock_in(employee_id, mode="Office", at=None, day=None):
     the day is kept under. Returns ``(ok, message)``.
     """
 
-    day = day or datetime.date.today()
-    at = at or datetime.datetime.now().time()
+    _now = datetime.datetime.now(
+        datetime.timezone(datetime.timedelta(hours=5, minutes=30))
+    )
+    day = day or _now.date()
+    at = at or _now.time()
 
     if not is_working_day(day):
 
@@ -907,8 +910,11 @@ def clock_out(employee_id, at=None, day=None):
     Returns ``(ok, message)``.
     """
 
-    day = day or datetime.date.today()
-    at = at or datetime.datetime.now().time()
+    _now = datetime.datetime.now(
+        datetime.timezone(datetime.timedelta(hours=5, minutes=30))
+    )
+    day = day or _now.date()
+    at = at or _now.time()
 
     record = today_record(employee_id, day)
 
