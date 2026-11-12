@@ -167,10 +167,16 @@ def render_sidebar(user):
                         st.rerun()
 
                 if group == "Payroll":
-                    st.caption("Portals")
+                    st.caption("Government Portals")
                     st.link_button(
-                        "Pazcare Login",
-                        "https://app.pazcare.com/login",
+                        "UMANG",
+                        "https://web.umang.gov.in/",
+                        icon=":material/open_in_new:",
+                        width="stretch",
+                    )
+                    st.link_button(
+                        "EPFO Passbook",
+                        "https://passbook.epfindia.gov.in/MemberPassBook/login",
                         icon=":material/open_in_new:",
                         width="stretch",
                     )
