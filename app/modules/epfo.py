@@ -29,27 +29,18 @@ from modules.salary import (
 def epfo_components(breakdown):
     """Monthly EPFO split derived from a payslip breakdown."""
 
-    employee_pf = round(float(breakdown["employee_pf"]), 2)
-    employer_contribution = round(float(breakdown["employer_pf"]), 2)
     basic = round(float(breakdown["basic"]), 2)
-    pensionable_wages = min(
-        max(0.0, float(
-            breakdown.get("pf_wages", min(basic, PF_WAGE_CEILING_MONTHLY))
-        )),
-        EPS_WAGE_CEILING_MONTHLY
+    pf_wages = min(
+        max(0.0, float(breakdown.get("pf_wages", basic))),
+        PF_WAGE_CEILING_MONTHLY
     )
-    expected_employer_contribution = round(
-        pensionable_wages * PF_RATE, 2
-    )
-    employer_eps = (
-        round(employer_contribution * (EPS_RATE / PF_RATE), 2)
-        if employer_contribution < expected_employer_contribution - 0.01
-        else round(pensionable_wages * EPS_RATE, 2)
-    )
+    employee_pf = round(float(breakdown.get("employee_pf", pf_wages * PF_RATE)), 2)
+    employer_contribution = round(float(breakdown.get("employer_pf", pf_wages * PF_RATE)), 2)
+    employer_eps = round(pf_wages * EPS_RATE, 2)
     employer_epf = round(employer_contribution - employer_eps, 2)
 
     return {
-        "pf_wages": round(pensionable_wages, 2),
+        "pf_wages": round(pf_wages, 2),
         "employee_epf": employee_pf,
         "employee_vpf": 0.0,
         "employer_epf": employer_epf,
@@ -120,38 +111,15 @@ def epfo_statement(employee, year, month):
         if (pay_year, pay_month) < (joining.year, joining.month):
             continue
 
-        day_counts = payroll_day_counts(employee[4], pay_year, pay_month)
-        proration_factor = (
-            day_counts["paid_days"] / day_counts["calendar_days"]
-            if day_counts["calendar_days"]
-            else 1.0
-        )
-        unprorated_basic = (
-            basic / proration_factor
-            if proration_factor
-            else 0.0
-        )
         pf_wages = min(
-            max(0.0, unprorated_basic),
-            EPS_WAGE_CEILING_MONTHLY
-        ) * proration_factor
-
-        statutory_capped_pf = round(pf_wages * PF_RATE, 2)
-        effective_employee_pf = (
-            statutory_capped_pf
-            if employee_pf > statutory_capped_pf
-            else employee_pf
-        )
-        effective_employer_pf = (
-            statutory_capped_pf
-            if employer_pf > statutory_capped_pf
-            else employer_pf
+            max(0.0, float(basic or 0)),
+            PF_WAGE_CEILING_MONTHLY
         )
         components = epfo_components({
             "basic": basic,
             "pf_wages": pf_wages,
-            "employee_pf": effective_employee_pf,
-            "employer_pf": effective_employer_pf
+            "employee_pf": employee_pf,
+            "employer_pf": employer_pf
         })
         monthly_credit = components["monthly_credit"]
         balance = round(balance + monthly_credit, 2)
