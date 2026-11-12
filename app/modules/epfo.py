@@ -136,11 +136,22 @@ def epfo_statement(employee, year, month):
             EPS_WAGE_CEILING_MONTHLY
         ) * proration_factor
 
+        statutory_capped_pf = round(pf_wages * PF_RATE, 2)
+        effective_employee_pf = (
+            statutory_capped_pf
+            if employee_pf > statutory_capped_pf
+            else employee_pf
+        )
+        effective_employer_pf = (
+            statutory_capped_pf
+            if employer_pf > statutory_capped_pf
+            else employer_pf
+        )
         components = epfo_components({
             "basic": basic,
             "pf_wages": pf_wages,
-            "employee_pf": employee_pf,
-            "employer_pf": employer_pf
+            "employee_pf": effective_employee_pf,
+            "employer_pf": effective_employer_pf
         })
         monthly_credit = components["monthly_credit"]
         balance = round(balance + monthly_credit, 2)

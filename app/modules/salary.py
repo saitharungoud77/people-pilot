@@ -123,12 +123,27 @@ def auto_salary_components(
     }
 
 
-def pf_contributions_for_basic(basic_monthly):
-    """Return capped PF wages and 12% employee/employer contributions."""
+def pf_contributions_for_basic(basic_monthly, proration_factor=1.0):
+    """Return capped PF wages and 12% employee/employer contributions.
 
+    When an employee joins mid-month (proration_factor < 1.0), the
+    statutory PF wage ceiling (₹ 15,000) is prorated for the broken
+    period according to EPFO statutory compliance regulations.
+    """
+
+    factor = (
+        float(proration_factor)
+        if proration_factor is not None and 0.0 < float(proration_factor) <= 1.0
+        else 1.0
+    )
+    effective_ceiling = (
+        round(PF_WAGE_CEILING_MONTHLY * factor, 2)
+        if factor < 1.0
+        else PF_WAGE_CEILING_MONTHLY
+    )
     pf_wages = min(
         max(0.0, float(basic_monthly or 0)),
-        PF_WAGE_CEILING_MONTHLY
+        effective_ceiling
     )
     contribution = round(pf_wages * PF_RATE, 2)
     return {

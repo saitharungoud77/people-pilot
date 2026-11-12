@@ -310,7 +310,10 @@ def build_monthly_breakdown(
     other_allowance = round(other_allowance * proration_factor, 2)
 
     other_deduction = round(other_deduction * proration_factor, 2)
-    pf_contributions = pf_contributions_for_basic(basic)
+    pf_contributions = pf_contributions_for_basic(
+        basic,
+        proration_factor=proration_factor
+    )
     employee_pf = pf_contributions["employee_pf"]
     employer_pf = pf_contributions["employer_pf"]
 
