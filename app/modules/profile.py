@@ -274,51 +274,8 @@ def _render_photo_editor(employee_id, name):
 
     if uploaded is not None:
 
-        # Let the employee frame the shot before saving it: zoom in,
-        # slide the picture left/right and up/down, and straighten it.
-        zoom = st.slider(
-            "Zoom",
-            min_value=1.0,
-            max_value=3.0,
-            value=1.0,
-            step=0.05,
-            key="profile_photo_zoom",
-            help="Zoom in to crop closer to the face."
-        )
-
-        move_x = st.slider(
-            "Move left / right",
-            min_value=-1.0,
-            max_value=1.0,
-            value=0.0,
-            step=0.05,
-            key="profile_photo_x"
-        )
-
-        move_y = st.slider(
-            "Move up / down",
-            min_value=-1.0,
-            max_value=1.0,
-            value=0.0,
-            step=0.05,
-            key="profile_photo_y"
-        )
-
-        rotation = st.select_slider(
-            "Straighten",
-            options=[-90, 0, 90, 180],
-            value=0,
-            key="profile_photo_rotation",
-            help="Quarter turns, for a sideways phone photo."
-        )
-
-        data, error = process_upload(
-            uploaded,
-            zoom=zoom,
-            offset_x=move_x,
-            offset_y=move_y,
-            rotation=rotation
-        )
+        # Keep it simple: just centre-crop and resize the uploaded image.
+        data, error = process_upload(uploaded)
 
         if error:
 
