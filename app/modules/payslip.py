@@ -223,23 +223,40 @@ def lop_days_for_month(employee_id, year, month):
 
 
 def monthly_tds(gross_monthly):
-    """Rough monthly TDS under the new regime (no exemptions)."""
-    annual = (gross_monthly or 0) * 12
-    taxable = max(0.0, annual - 75000.0)
-    slabs = [(300000, 0.0), (300000, 0.05), (300000, 0.10),
-             (300000, 0.15), (300000, 0.20)]
+    """Estimated monthly TDS under the new tax regime.
+
+    Applies the modern tax slabs with ₹ 75,000 standard deduction
+    and Section 87A rebate (zero tax for taxable income up to ₹ 12 Lakhs).
+    """
+    annual_gross = float(gross_monthly or 0) * 12.0
+    taxable = max(0.0, annual_gross - 75000.0)
+    if taxable <= 1200000.0:
+        # Full Section 87A rebate applies for taxable income up to 12 Lakhs
+        return 0.0
+
+    # Modern tax slabs: 0-4L: 0%, 4-8L: 5%, 8-12L: 10%, 12-16L: 15%, 16-20L: 20%, 20-24L: 25%, >24L: 30%
+    slabs = [
+        (400000.0, 0.00),
+        (800000.0, 0.05),
+        (1200000.0, 0.10),
+        (1600000.0, 0.15),
+        (2000000.0, 0.20),
+        (2400000.0, 0.25),
+        (float("inf"), 0.30),
+    ]
     tax = 0.0
-    remaining = taxable
-    for limit, rate in slabs:
-        if remaining <= 0:
+    lower = 0.0
+    for upper, rate in slabs:
+        if taxable <= lower:
             break
-        chunk = min(remaining, limit)
-        tax += chunk * rate
-        remaining -= chunk
-    if remaining > 0:
-        tax += remaining * 0.30
-    tax = tax * 1.04  # cess
-    return round(tax / 12, 2)
+        tax += (min(taxable, upper) - lower) * rate
+        lower = upper
+
+    # Marginal relief: tax cannot exceed income above 12 Lakhs
+    tax = min(tax, taxable - 1200000.0)
+    # 4% Health and Education Cess
+    tax = tax * 1.04
+    return round(tax / 12.0, 2)
 
 
 def apply_lop(breakdown, month, year, lop_days):
@@ -1056,8 +1073,11 @@ def build_payslip_html(breakdown, month, year):
     deduction_rows = [
         ("Employee PF", breakdown["employee_pf"]),
         ("Professional Tax", breakdown["professional_tax"]),
-        ("Other Deduction", breakdown["other_deduction"]),
     ]
+    if breakdown.get("income_tax"):
+        deduction_rows.append(("Income Tax (TDS)", breakdown["income_tax"]))
+    if breakdown.get("other_deduction"):
+        deduction_rows.append(("Other Deduction", breakdown["other_deduction"]))
     if lop_amount or ytd["lop_amount"]:
         deduction_rows.append(("Loss of Pay", lop_amount))
 
@@ -1583,7 +1603,16 @@ def build_payslip_pdf(breakdown, month, year):
         [
             ("Employee PF", breakdown["employee_pf"]),
             ("Professional Tax", breakdown["professional_tax"]),
-            ("Other Deduction", breakdown["other_deduction"]),
+            *(
+                [("Income Tax (TDS)", breakdown["income_tax"])]
+                if breakdown.get("income_tax")
+                else []
+            ),
+            *(
+                [("Other Deduction", breakdown["other_deduction"])]
+                if breakdown.get("other_deduction")
+                else []
+            ),
             *(
                 [("Loss of Pay", lop_amount)]
                 if lop_amount or ytd["lop_amount"]
