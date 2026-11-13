@@ -222,6 +222,26 @@ def lop_days_for_month(employee_id, year, month):
     return total
 
 
+def monthly_tds(gross_monthly):
+    \"\"\"Rough monthly TDS under the new regime (no exemptions).\"\"\"
+    annual = (gross_monthly or 0) * 12
+    taxable = max(0.0, annual - 75000.0)
+    slabs = [(300000, 0.0), (300000, 0.05), (300000, 0.10),
+             (300000, 0.15), (300000, 0.20)]
+    tax = 0.0
+    remaining = taxable
+    for limit, rate in slabs:
+        if remaining <= 0:
+            break
+        chunk = min(remaining, limit)
+        tax += chunk * rate
+        remaining -= chunk
+    if remaining > 0:
+        tax += remaining * 0.30
+    tax = tax * 1.04  # cess
+    return round(tax / 12, 2)
+
+
 def apply_lop(breakdown, month, year, lop_days):
     """Set the LOP days/amount on a breakdown and adjust net pay.
 
@@ -313,6 +333,11 @@ def build_monthly_breakdown(
     pf_contributions = pf_contributions_for_basic(basic)
     employee_pf = pf_contributions["employee_pf"]
     employer_pf = pf_contributions["employer_pf"]
+    income_tax = monthly_tds(
+        (basic + hra + special + other_allowance) / proration_factor
+        if proration_factor else 0
+    ) * proration_factor
+    income_tax = round(income_tax, 2)
 
     gross_monthly = (
         basic
@@ -325,6 +350,7 @@ def build_monthly_breakdown(
         employee_pf
         + professional_tax
         + other_deduction
+        + income_tax
     )
 
     net_pay = gross_monthly - total_deductions
@@ -377,6 +403,7 @@ def build_monthly_breakdown(
         "employer_pf": employer_pf,
         "professional_tax": professional_tax,
         "other_deduction": other_deduction,
+        "income_tax": income_tax,
         "total_deductions": total_deductions,
         "lop_days": lop_days,
         "lop_amount": lop_amount,
@@ -407,6 +434,7 @@ def save_payslip(employee, month, year, breakdown, overwrite=True):
             employer_pf_monthly = excluded.employer_pf_monthly,
             professional_tax_monthly = excluded.professional_tax_monthly,
             other_deduction_monthly = excluded.other_deduction_monthly,
+            income_tax_monthly = excluded.income_tax_monthly,
             total_deductions = excluded.total_deductions,
             net_pay = excluded.net_pay,
             lop_days = excluded.lop_days,
@@ -436,13 +464,14 @@ def save_payslip(employee, month, year, breakdown, overwrite=True):
                 employer_pf_monthly,
                 professional_tax_monthly,
                 other_deduction_monthly,
+                income_tax_monthly,
                 total_deductions,
                 net_pay,
                 lop_days,
                 lop_amount,
                 generated_at
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(employee_id, pay_month, pay_year)
             {conflict_action}
             """,
@@ -459,6 +488,7 @@ def save_payslip(employee, month, year, breakdown, overwrite=True):
                 breakdown["employer_pf"],
                 breakdown["professional_tax"],
                 breakdown["other_deduction"],
+                breakdown.get("income_tax", 0.0),
                 breakdown["total_deductions"],
                 breakdown["net_pay"],
                 breakdown.get("lop_days", 0),
@@ -757,6 +787,7 @@ def get_saved_payslip_details(employee_id, pay_year, pay_month):
         "employer_pf_monthly",
         "professional_tax_monthly",
         "other_deduction_monthly",
+        "income_tax_monthly",
         "total_deductions",
         "net_pay",
         "lop_days",
@@ -781,6 +812,7 @@ def get_saved_payslip_details(employee_id, pay_year, pay_month):
                 employer_pf_monthly,
                 professional_tax_monthly,
                 other_deduction_monthly,
+                income_tax_monthly,
                 total_deductions,
                 net_pay,
                 lop_days,
@@ -829,6 +861,7 @@ def breakdown_from_saved(employee_row, saved):
         "employer_pf": saved["employer_pf_monthly"],
         "professional_tax": saved["professional_tax_monthly"],
         "other_deduction": saved["other_deduction_monthly"],
+        "income_tax": saved.get("income_tax_monthly", 0.0),
         "total_deductions": saved["total_deductions"],
         "lop_days": saved["lop_days"],
         "lop_amount": saved["lop_amount"],
@@ -2211,6 +2244,14 @@ def show_payslip():
                 key=f"edit_ded_{employee[0]}_{year}_{month}"
             )
 
+            income_tax = st.number_input(
+                "Income Tax (TDS)",
+                min_value=0.0,
+                value=round(breakdown.get("income_tax", 0.0), 2),
+                step=50.0,
+                key=f"edit_tax_{employee[0]}_{year}_{month}"
+            )
+
             lop_days_input = st.number_input(
                 f"LOP days — {MONTHS[month - 1]} {year}",
                 min_value=0,
@@ -2235,7 +2276,8 @@ def show_payslip():
             "employee_pf": employee_pf,
             "employer_pf": employer_pf,
             "professional_tax": professional_tax,
-            "other_deduction": other_deduction
+            "other_deduction": other_deduction,
+            "income_tax": income_tax
         }
     )
 
@@ -2245,7 +2287,7 @@ def show_payslip():
     )
 
     breakdown["total_deductions"] = round(
-        employee_pf + professional_tax + other_deduction,
+        employee_pf + professional_tax + other_deduction + income_tax,
         2
     )
 
@@ -2518,6 +2560,7 @@ def _my_payslips(employee_id):
                 employer_pf_monthly,
                 professional_tax_monthly,
                 other_deduction_monthly,
+                income_tax_monthly,
                 total_deductions,
                 net_pay,
                 lop_days,
@@ -2546,6 +2589,7 @@ def _my_payslips(employee_id):
         "employer_pf_monthly",
         "professional_tax_monthly",
         "other_deduction_monthly",
+        "income_tax_monthly",
         "total_deductions",
         "net_pay",
         "lop_days",
