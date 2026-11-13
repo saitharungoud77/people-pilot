@@ -1,6 +1,6 @@
 # AI HR & Payroll Portal - Detailed Documentation
 
-**Generated on:** 12 November 2026, 10:41 PM
+**Generated on:** 13 November 2026, 08:32 AM
 **Company:** AIT Solutions | **Location:** Hi-Tech City, Hyderabad
 **Type:** AI-first HR & Payroll Portal (HR + Employees)
 
@@ -13,8 +13,8 @@
 | Item | Value | Notes |
 | --- | --- | --- |
 | Modules in app/modules/ | 46 | One file per feature
-| Total lines | 37,206 | Auto-counted
-| Total functions | 588 | Auto-counted
+| Total lines | 37,258 | Auto-counted
+| Total functions | 589 | Auto-counted
 | HR routes | 27 | From app/main.py
 | Employee routes | 18 | From app/main.py
 | DB tables | 24 | From database/connection.py
@@ -160,7 +160,7 @@ sqlite3, datetime, calendar, json, os, re, csv, io, base64, math, hashlib, hmac,
 | 14 | employee.py | 1,292 | 6 | NO | Employee records | HR | Directory and full employee records: create and edit people, personal details, documents, project assignments and exit details. | FREE |
 | 15 | employee_documents.py | 525 | 12 | NO | employee_documents.py | - | - | FREE |
 | 16 | employee_services.py | 733 | 17 | NO | employee_services.py | - | - | FREE |
-| 17 | epfo.py | 576 | 9 | NO | Provident fund | Both roles | PF/EPFO statement reads employee and employer contributions from saved, released payslips only. The balance is a running total of contributions, with no interest added; unreleased months are omitted and the statement is capped at the latest due period and the employee's exit or final-settlement month. | FREE |
+| 17 | epfo.py | 555 | 9 | NO | Provident fund | Both roles | PF/EPFO statement reads employee and employer contributions from saved, released payslips only. The balance is a running total of contributions, with no interest added; unreleased months are omitted and the statement is capped at the latest due period and the employee's exit or final-settlement month. | FREE |
 | 18 | hiring_pack.py | 778 | 11 | YES | AI hiring pack | HR | Generates a job description, skills and screening questions, sends the skills to the resume analyzer, and builds an interview kit for a screened candidate. | PAID (OpenAI) |
 | 19 | holidays.py | 881 | 22 | NO | Holiday calendar | Both roles | The current year's upcoming holiday list. Fixed national holidays plus the curated 2026 festival dates are seeded once per year; HR can add, edit or remove entries, and employees see a read-only calendar. Past holidays and future years are not shown. | FREE |
 | 20 | home.py | 89 | 2 | NO | Landing splash | Public | Branded splash screen shown before sign-in, with the product name and a way into the login. | FREE |
@@ -173,7 +173,7 @@ sqlite3, datetime, calendar, json, os, re, csv, io, base64, math, hashlib, hmac,
 | 27 | open_positions.py | 332 | 6 | NO | open_positions.py | - | - | FREE |
 | 28 | payroll_audit.py | 1,149 | 19 | YES | AI payroll audit | HR | Pre-payroll checks across payslips, salary structures, attendance, leave, PF and bills, sorted by severity, with a CSV export and an AI-written brief. | PAID (OpenAI) |
 | 29 | payroll_migration.py | 246 | 2 | NO | payroll_migration.py | - | - | FREE |
-| 30 | payslip.py | 3,102 | 34 | NO | Payslips | HR generates, employee reads own | Builds monthly salary and PF using calendar-day proration, includes paid and holiday-aware working-day counts, and shows the scheduled pay date in the preview and PDF. Catches up all missing due months from the joining month through month end (or the preceding Friday on a weekend) through a daily Windows task and an app fallback. HR can generate a due month, edit components and payroll closes after settlement or exit. Employees see only saved, released payslips. | FREE |
+| 30 | payslip.py | 3,175 | 35 | NO | Payslips | HR generates, employee reads own | Builds monthly salary and PF using calendar-day proration, includes paid and holiday-aware working-day counts, and shows the scheduled pay date in the preview and PDF. Catches up all missing due months from the joining month through month end (or the preceding Friday on a weekend) through a daily Windows task and an app fallback. HR can generate a due month, edit components and payroll closes after settlement or exit. Employees see only saved, released payslips. | FREE |
 | 31 | policies.py | 204 | 6 | NO | POSH policy | Both roles | A read-only page showing the POSH policy from data/posh_policy.md. | FREE |
 | 32 | profile.py | 835 | 9 | NO | My profile | Employee | Employees maintain their own personal details and profile photo, including zoom, position and rotation before saving. | FREE |
 | 33 | projects.py | 460 | 8 | NO | Project assignments | HR writes, employee reads own | The projects each employee is working on. HR assigns a project (name, role, status, start date, notes) and removes old ones; the employee sees the same list read-only on My overview and gets a notification when a project is assigned. | FREE |

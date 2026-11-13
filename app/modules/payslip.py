@@ -936,7 +936,9 @@ def _payslip_ytd_amounts(breakdown, month, year):
             COALESCE(SUM(gross_monthly), 0),
             COALESCE(SUM(employee_pf_monthly), 0),
             COALESCE(SUM(other_deduction_monthly), 0),
-            COALESCE(SUM(lop_amount), 0)
+            COALESCE(SUM(lop_amount), 0),
+            COALESCE(SUM(professional_tax_monthly), 0),
+            COALESCE(SUM(income_tax_monthly), 0)
         FROM payslips
         WHERE employee_id = ?
           AND (pay_year * 12 + pay_month) >= ?
@@ -960,6 +962,8 @@ def _payslip_ytd_amounts(breakdown, month, year):
         "employee_pf",
         "other_deduction",
         "lop_amount",
+        "professional_tax",
+        "income_tax",
     )
     return {
         key: round(float(previous_periods[index] or 0) +
@@ -2656,6 +2660,7 @@ def _monthly_breakdown(employee, payslip):
         "employer_pf": payslip["employer_pf_monthly"],
         "professional_tax": payslip["professional_tax_monthly"],
         "other_deduction": payslip["other_deduction_monthly"],
+        "income_tax": payslip.get("income_tax_monthly", 0.0),
         "total_deductions": payslip["total_deductions"],
         "lop_days": payslip.get("lop_days", 0),
         "lop_amount": payslip.get("lop_amount", 0.0),
@@ -2843,9 +2848,13 @@ def _render_annual_earnings(employee, saved, latest_period):
         ("Special Allowance", "special_allowance_monthly"),
         ("Other Allowance", "other_allowance_monthly"),
         ("Total Earnings", "gross_monthly"),
+    ]
+    if any(float(record.get("income_tax_monthly") or 0) > 0 for record in actual_records):
+        component_fields.append(("Income Tax (TDS)", "income_tax_monthly"))
+    component_fields.extend([
         ("Total Deductions", "total_deductions"),
         ("Net Pay", "net_pay"),
-    ]
+    ])
     month_labels = [
         f"{MONTHS[month - 1]} {year}"
         for year, month in periods

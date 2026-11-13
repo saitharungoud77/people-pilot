@@ -933,6 +933,7 @@ def _tool_get_payslip(args, user):
         "employer_pf_monthly": saved["employer_pf_monthly"],
         "professional_tax_monthly": saved["professional_tax_monthly"],
         "other_deduction_monthly": saved["other_deduction_monthly"],
+        "income_tax_monthly": saved.get("income_tax_monthly", 0.0),
         "total_deductions": saved["total_deductions"],
         "net_pay": saved["net_pay"],
         "lop_days": saved["lop_days"],
