@@ -2842,6 +2842,7 @@ def _render_annual_earnings(employee, saved, latest_period):
         period for period in fiscal_periods
         if period <= last_generated_period
     ]
+    actual_records = [saved[p] for p in periods if p in saved]
     component_fields = [
         ("Basic", "basic_monthly"),
         ("House Rent Allowance", "hra_monthly"),
@@ -2864,14 +2865,12 @@ def _render_annual_earnings(employee, saved, latest_period):
         for year, month in periods
     ]
     chart_rows = []
-    actual_records = []
 
     for (year, month), label, short_label in zip(periods, month_labels, short_labels):
         record = saved.get((year, month))
         if record:
             total_earnings = float(record["gross_monthly"] or 0)
             net_pay = float(record["net_pay"] or 0)
-            actual_records.append(record)
         else:
             total_earnings = None
             net_pay = None
