@@ -300,7 +300,7 @@ def create_payslip_table():
         ("lop_amount", "REAL NOT NULL DEFAULT 0"),
         ("professional_tax_monthly", "REAL NOT NULL DEFAULT 0"),
         ("income_tax_monthly", "REAL NOT NULL DEFAULT 0"),
-    ]
+    ]:
 
         if column not in existing:
 
