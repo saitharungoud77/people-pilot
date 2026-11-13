@@ -223,7 +223,7 @@ def lop_days_for_month(employee_id, year, month):
 
 
 def monthly_tds(gross_monthly):
-    \"\"\"Rough monthly TDS under the new regime (no exemptions).\"\"\"
+    """Rough monthly TDS under the new regime (no exemptions)."""
     annual = (gross_monthly or 0) * 12
     taxable = max(0.0, annual - 75000.0)
     slabs = [(300000, 0.0), (300000, 0.05), (300000, 0.10),
